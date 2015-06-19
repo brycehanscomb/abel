@@ -41,23 +41,22 @@
 
 	function doAbelStuff(decreedElement) {
 
-		var abelElement = decreedElement;
-		var abelDecree = abelElement.getAttribute('data-abel');
-		abelDecree = abelDecree.replace(/\s+/g, ' '); // squeeze all whitespace (@see http://stackoverflow.com/a/6163180/1063035)
-		var rawDecreeKeywords = replaceFragments(abelDecree).split(' ');
-		var validRawDecree = rawDecreeKeywords.filter(isValidDecreeFragment);
+		var abelDecree = decreedElement.getAttribute('data-abel').replace(/\s+/g, ' '); // squeeze all whitespace (@see http://stackoverflow.com/a/6163180/1063035)
+		var rawDecreeKeywords = replaceFragments(abelDecree);
+		var validRawDecree = rawDecreeKeywords.split(' ').filter(isValidDecreeFragment);
+
+		var directivesList = DoublyLinkedList.forge();
 
 		var statements = splitOnAnyOf(
 			[ ABEL_KEYWORDS.PERIOD ].concat(validRawDecree), // Have to add one split item to the front for the algorithm to work
 			[ ABEL_KEYWORDS.PERIOD, ABEL_KEYWORDS.COMMA ]
 		);
 
-		var directives = statements.map(function(directive) {
-			return getDirectiveFromStatement(directive, abelElement)
-		});
-
-		var directivesList = DoublyLinkedList.forge();
-		directives.forEach(directivesList.add, directivesList);
+		statements
+			.map(function(statement) {
+				return getDirectiveFromStatement(statement, decreedElement)
+			})
+			.forEach(directivesList.add, directivesList);
 
 		directivesList.forEach(function(directive) {
 			if (shouldDirectiveBeRunStraightAway(directive)) {
