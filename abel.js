@@ -1,5 +1,28 @@
 (function() {
 
+	var ABEL_KEYWORDS = {
+		I: 'i',
+		START_AS: 'start_as',
+		IS_CHECKED: 'is_checked',
+		IS_NOT_CHECKED: 'is_not_checked',
+		HIDDEN: 'hidden',
+		SHOWING: 'showing',
+		WHEN: 'when',
+		CHECKED: 'checked',
+		SELECTED: 'selected',
+		WILL: 'will',
+		SHOW: 'show',
+		HIDE: 'hide',
+		IS: 'is',
+		PERIOD: '%_PERIOD_%',
+		COMMA: '%_COMMA_%',
+		LISTEN_FOR: 'listen_for',
+		VALUE_EQUALS: 'value_equals',
+		VALUE_DOES_NOT_EQUAL: 'value_does_not_equal',
+		VALUE_IS_LESS_THAN: 'value_is_less_than',
+		VALUE_IS_MORE_THAN: 'value_is_more_than'
+	};
+
 	var validRawKeywords = [
 		'i',
 		'start_as',
@@ -24,22 +47,17 @@
 	];
 
 	var fragmentReplacements = {
-		'.': ' %_PERIOD_%',
-		',': ' %_COMMA_%',
-		'start as': 'start_as',
-		'is checked': 'is_checked',
-		'is not checked': 'is_not_checked',
-		'when': 'listen_for',
-		'\'s value is less than': ' value_is_less_than',
-		'\'s value is more than': ' value_is_more_than',
-		'\'s value is not': ' value_does_not_equal',
-		'\'s value is': ' value_equals'
+		'.': ' ' + ABEL_KEYWORDS.PERIOD,
+		',': ' ' + ABEL_KEYWORDS.COMMA,
+		'start as': ABEL_KEYWORDS.START_AS,
+		'is checked': ABEL_KEYWORDS.IS_CHECKED,
+		'is not checked': ABEL_KEYWORDS.IS_NOT_CHECKED,
+		'when': ABEL_KEYWORDS.LISTEN_FOR,
+		'\'s value is less than': ' ' + ABEL_KEYWORDS.VALUE_IS_LESS_THAN,
+		'\'s value is more than': ' ' + ABEL_KEYWORDS.VALUE_IS_MORE_THAN,
+		'\'s value is not': ' ' + ABEL_KEYWORDS.VALUE_DOES_NOT_EQUAL,
+		'\'s value is': ' ' + ABEL_KEYWORDS.VALUE_EQUALS
 	};
-
-	Array.prototype.forEach.call(
-		document.querySelectorAll('[data-abel]'),
-		doAbelStuff
-	);
 
 	function doAbelStuff(decreedElement) {
 
@@ -50,10 +68,10 @@
 		var validRawDecree = rawDecreeKeywords.filter(isValidDecreeFragment);
 
 		var statements = splitOnAnyOf(
-			['%_PERIOD_%'].concat(validRawDecree),
+			[ABEL_KEYWORDS.PERIOD].concat(validRawDecree),
 			[
-				'%_PERIOD_%',
-				'%_COMMA_%'
+				ABEL_KEYWORDS.PERIOD,
+				ABEL_KEYWORDS.COMMA
 			]
 		);
 
@@ -78,21 +96,46 @@
 
 
 
+	var elementUtils = {
+		hide: function(element) {
+			element.style.display = 'none';
+		},
+		show: function(element) {
+			/**
+			 * From Zepto.js source code
+			 */
+			element.style.display == "none" && (element.style.display = '')
+			if (getComputedStyle(element, '').getPropertyValue("display") == "none")
+				element.style.display = defaultDisplay(element.nodeName)
+		},
+		getElementByHashSelector: function (hashSelector) {
+			/**
+			 * '#hello' -> <div id="hello"></div>
+			 */
+			return document.getElementById(
+				hashSelector.slice(1)
+			);
+		}
+	};
+
+	var stringUtils = {
+		unquote: function(quotedString) {
+			return quotedString.slice(1, quotedString.length - 1);
+		},
+		replaceAll: function (input, replaceThis, withThis) {
+			var result = String(input);
+
+			while(result.indexOf(replaceThis) > -1) {
+				result = result.replace(replaceThis, withThis);
+			}
+
+			return result;
+		}
+	};
 
 
-	function hideElement(element) {
-		element.style.display = 'none';
-	}
 
-	function showElement(element) {
-		element.style.display == "none" && (element.style.display = '')
-		if (getComputedStyle(element, '').getPropertyValue("display") == "none")
-			element.style.display = defaultDisplay(element.nodeName)
-	}
 
-	function unquote(quotedString) {
-		return quotedString.slice(1, quotedString.length - 1);
-	}
 
 	function shouldDirectiveBeRunStraightAway(directive) {
 
@@ -143,15 +186,6 @@
 		return results;
 	}
 
-	/**
-	 * '#hello' -> <div id="hello"></div>
-	 */
-	function getElementByHashSelector(hashSelector) {
-		return document.getElementById(
-			hashSelector.slice(1)
-		);
-	}
-
 	function getDirectiveFromStatement(statement, abelElement) {
 
 		var result = statement.map(function(keyword) {
@@ -159,7 +193,7 @@
 			return keyword;
 		});
 
-		// the selector needs to be at the start, not in the middle!
+		// the selector needs to be at the start, not second!
 		if (isSelector(result[0]) === false && isSelector(result[1]) === true) {
 			var temp = result[0];
 			result[0] = result[1];
@@ -168,7 +202,7 @@
 
 		result = result.map(function(keyword) {
 			if (isSelector(keyword)) {
-				return getElementByHashSelector(keyword);
+				return elementUtils.getElementByHashSelector(keyword);
 			}
 
 			switch(keyword) {
@@ -182,56 +216,17 @@
 		return result;
 	}
 
-	/**
-	 * Creates an array of arrays that are split from any instance of `splitItem`, sort of like String.split()
-	 * @param  {Array} collection
-	 * @param  {*} splitItem
-	 * @return {Array}
-	 */
-	function splitOn(collection, splitItem) {
-
-		var result = [];
-		var remainingItems = collection.slice(); // copies the array
-
-		if (collection.indexOf(splitItem) === -1) {
-			return remainingItems;
-		}
-
-		while(remainingItems.indexOf(splitItem) > -1) {
-			result.push(
-				remainingItems.splice(
-					0,
-					remainingItems.indexOf(splitItem)
-				)
-			);
-
-			remainingItems.splice(0,1); // remove the splitItem
-		}
-
-		return result;
-	}
-
 	function replaceFragments(rawDecree) {
 		var result = rawDecree;
 
 		for (var prop in fragmentReplacements) {
 			if (fragmentReplacements.hasOwnProperty(prop)) {
-				result = replaceAllInString(
+				result = stringUtils.replaceAll(
 					result,
 					prop,
 					fragmentReplacements[prop]
 				);
 			}
-		}
-
-		return result;
-	}
-
-	function replaceAllInString(input, replaceThis, withThis) {
-		var result = String(input);
-
-		while(result.indexOf(replaceThis) > -1) {
-			result = result.replace(replaceThis, withThis);
 		}
 
 		return result;
@@ -265,11 +260,11 @@
 		var valueToTestFor = directive[3];
 
 		switch(action) {
-			case 'start_as':
-			case 'will':
+			case ABEL_KEYWORDS.START_AS:
+			case ABEL_KEYWORDS.WILL:
 				doSimpleActionDirective(directive);
 				break;
-			case 'listen_for':
+			case ABEL_KEYWORDS.LISTEN_FOR:
 				doCreateListenerDirective(
 					directive,
 					directivesList.getNext(
@@ -286,13 +281,13 @@
 		var command = directive[2];
 
 		switch(command) {
-			case 'hidden':
-			case 'hide':
-				hideElement(target);
+			case ABEL_KEYWORDS.HIDDEN:
+			case ABEL_KEYWORDS.HIDE:
+				elementUtils.hide(target);
 				break;
-			case 'showing':
-			case 'show':
-				showElement(target);
+			case ABEL_KEYWORDS.SHOWING:
+			case ABEL_KEYWORDS.SHOW:
+				elementUtils.show(target);
 				break;
 		}
 	}
@@ -324,7 +319,7 @@
 		var callback;
 
 		switch(eventType) {
-			case 'is_checked':
+			case ABEL_KEYWORDS.IS_CHECKED:
 				eventName = 'change';
 				callback = function(evt) {
 					if (target.checked === true) {
@@ -332,7 +327,7 @@
 					}
 				};
 				break;
-			case 'is_not_checked':
+			case ABEL_KEYWORDS.IS_NOT_CHECKED:
 				eventName = 'change';
 				callback = function(evt) {
 					if (target.checked === false) {
@@ -340,34 +335,34 @@
 					}
 				};
 				break;
-			case 'value_equals':
+			case ABEL_KEYWORDS.VALUE_EQUALS:
 				eventName = 'change';
 				callback = function(evt) {
-					if (String(target.value) === String(unquote(valueToTestFor))) {
+					if (String(target.value) === String(stringUtils.unquote(valueToTestFor))) {
 						runDirective(nextDirective, directivesList);
 					}
 				};
 				break;
-			case 'value_does_not_equal':
+			case ABEL_KEYWORDS.VALUE_DOES_NOT_EQUAL:
 				eventName = 'change';
 				callback = function(evt) {
-					if (String(target.value) !== String(unquote(valueToTestFor))) {
+					if (String(target.value) !== String(stringUtils.unquote(valueToTestFor))) {
 						runDirective(nextDirective, directivesList);
 					}
 				};
 				break;
-			case 'value_is_less_than':
+			case ABEL_KEYWORDS.VALUE_IS_LESS_THAN:
 				eventName = 'change';
 				callback = function(evt) {
-					if (parseInt(target.value, 10) < parseInt(String(unquote(valueToTestFor)), 10)) {
+					if (parseInt(target.value, 10) < parseInt(String(stringUtils.unquote(valueToTestFor)), 10)) {
 						runDirective(nextDirective, directivesList);
 					}
 				};
 				break;
-			case 'value_is_more_than':
+			case ABEL_KEYWORDS.VALUE_IS_MORE_THAN:
 				eventName = 'change';
 				callback = function(evt) {
-					if (parseInt(target.value, 10) > parseInt(String(unquote(valueToTestFor)), 10)) {
+					if (parseInt(target.value, 10) > parseInt(String(stringUtils.unquote(valueToTestFor)), 10)) {
 						runDirective(nextDirective, directivesList);
 					}
 				};
@@ -382,5 +377,10 @@
 			callback
 		];
 	}
+
+	Array.prototype.forEach.call(
+		document.querySelectorAll('[data-abel]'),
+		doAbelStuff
+	);
 
 })();
