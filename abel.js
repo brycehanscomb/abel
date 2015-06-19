@@ -23,6 +23,9 @@
 		VALUE_IS_MORE_THAN:     'value_is_more_than'
 	};
 
+	/**
+	 * The order of these keys matters greatly!
+	 */
 	var fragmentReplacements = {
 		'.':                        ' ' + ABEL_KEYWORDS.PERIOD,
 		',':                        ' ' + ABEL_KEYWORDS.COMMA,
