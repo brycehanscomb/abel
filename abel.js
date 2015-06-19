@@ -78,11 +78,15 @@
 		},
 		show: function(element) {
 			/**
-			 * From Zepto.js source code
+			 * Adapted from Zepto.js source code
 			 */
-			element.style.display == "none" && (element.style.display = '')
-			if (getComputedStyle(element, '').getPropertyValue("display") == "none")
-				element.style.display = defaultDisplay(element.nodeName)
+			var elementStyle = element.style;
+			var NONE = 'none';
+
+			elementStyle.display == NONE && (elementStyle.display = '');
+			if (getComputedStyle(element, '').getPropertyValue("display") == NONE) {
+				elementStyle.display = defaultDisplay(element.nodeName)
+			}
 		},
 		getElementByHashSelector: function (hashSelector) {
 			/**
@@ -179,13 +183,13 @@
 		result = result.map(function(keyword) {
 			if (isSelector(keyword)) {
 				return elementUtils.getElementByHashSelector(keyword);
-			}
-
-			switch(keyword) {
-				case ABEL_KEYWORDS.I:
-					return abelElement;
-				default:
-					return keyword;
+			} else {
+				switch(keyword) {
+					case ABEL_KEYWORDS.I:
+						return abelElement;
+					default:
+						return keyword;
+				}
 			}
 		});
 
