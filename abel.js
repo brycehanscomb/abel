@@ -203,7 +203,7 @@
 			}
 
 			switch(keyword) {
-				case 'i':
+				case ABEL_KEYWORDS.I:
 					return abelElement;
 				default:
 					return keyword;
