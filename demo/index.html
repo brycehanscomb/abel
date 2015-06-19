@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<script src="zepto.js"></script>
+	<script src="polyfills.js"></script>
+	<script src="DoublyLinkedList.js"></script>
+</head>
+
+<body>
+
+	<label>
+		<input type="checkbox" id="license_agreement_agreed">
+		I agree to the license agreement
+	</label>
+
+	<button data-abel="
+	    i start as hidden.
+	    when #license_agreement_agreed is checked, i will show.
+	    when #license_agreement_agreed is not checked, i will hide.
+    ">
+		Continue
+	</button>
+
+    <p data-abel="
+        when #license_agreement_agreed is checked, i will hide.
+        when #license_agreement_agreed is not checked, i will show.
+    ">
+        Ay, yo! You should agree before you continue...
+    </p>
+
+	<hr>
+
+	<select id="credit_card_method">
+		<option value="mastercard">
+			Mastercard
+		</option>
+		<option value="visa">
+			Visa
+		</option>
+		<option value="amex">
+			American Express
+		</option>
+	</select>
+
+	<p id="surcharge_disclaimer" data-abel="
+	    i start as hidden.
+	    when #credit_card_method's value is 'visa', i will show.
+	    when #credit_card_method's value is not 'visa', i will hide.
+    ">
+		There will be a Surcharge for using Visa cards.
+	</p>
+
+	<hr>
+
+	<label>
+		Max price:
+		<input type="number" id="max_price" value="10">
+	</label>
+
+	<p id="price_shame_notice" data-abel="
+	    i start as hidden.
+	    when #max_price's value is less than '10', i will show.
+	    when #max_price's value is '10', i will hide.
+	    when #max_price's value is more than '10', i will hide.
+    ">
+		You should pay more than that!
+	</p>
+
+	<p id="price_helper_prompt" data-abel="
+	    when #max_price's value is not '10', i will hide.
+    ">
+		Don't forget to change your max price!
+	</p>
+
+	<script src="abel.js"></script>
+</body>
+</html>
