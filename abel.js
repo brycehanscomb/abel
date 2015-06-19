@@ -1,26 +1,26 @@
 (function() {
 
 	var ABEL_KEYWORDS = {
-		I: 'i',
-		START_AS: 'start_as',
-		IS_CHECKED: 'is_checked',
-		IS_NOT_CHECKED: 'is_not_checked',
-		HIDDEN: 'hidden',
-		SHOWING: 'showing',
-		WHEN: 'when',
-		CHECKED: 'checked',
-		SELECTED: 'selected',
-		WILL: 'will',
-		SHOW: 'show',
-		HIDE: 'hide',
-		IS: 'is',
-		PERIOD: '%_PERIOD_%',
-		COMMA: '%_COMMA_%',
-		LISTEN_FOR: 'listen_for',
-		VALUE_EQUALS: 'value_equals',
-		VALUE_DOES_NOT_EQUAL: 'value_does_not_equal',
-		VALUE_IS_LESS_THAN: 'value_is_less_than',
-		VALUE_IS_MORE_THAN: 'value_is_more_than'
+		I:                      'i',
+		START_AS:               'start_as',
+		IS_CHECKED:             'is_checked',
+		IS_NOT_CHECKED:         'is_not_checked',
+		HIDDEN:                 'hidden',
+		SHOWING:                'showing',
+		WHEN:                   'when',
+		CHECKED:                'checked',
+		SELECTED:               'selected',
+		WILL:                   'will',
+		SHOW:                   'show',
+		HIDE:                   'hide',
+		IS:                     'is',
+		PERIOD:                 '%_PERIOD_%',
+		COMMA:                  '%_COMMA_%',
+		LISTEN_FOR:             'listen_for',
+		VALUE_EQUALS:           'value_equals',
+		VALUE_DOES_NOT_EQUAL:   'value_does_not_equal',
+		VALUE_IS_LESS_THAN:     'value_is_less_than',
+		VALUE_IS_MORE_THAN:     'value_is_more_than'
 	};
 
 	var validRawKeywords = [
@@ -47,16 +47,16 @@
 	];
 
 	var fragmentReplacements = {
-		'.': ' ' + ABEL_KEYWORDS.PERIOD,
-		',': ' ' + ABEL_KEYWORDS.COMMA,
-		'start as': ABEL_KEYWORDS.START_AS,
-		'is checked': ABEL_KEYWORDS.IS_CHECKED,
-		'is not checked': ABEL_KEYWORDS.IS_NOT_CHECKED,
-		'when': ABEL_KEYWORDS.LISTEN_FOR,
-		'\'s value is less than': ' ' + ABEL_KEYWORDS.VALUE_IS_LESS_THAN,
-		'\'s value is more than': ' ' + ABEL_KEYWORDS.VALUE_IS_MORE_THAN,
-		'\'s value is not': ' ' + ABEL_KEYWORDS.VALUE_DOES_NOT_EQUAL,
-		'\'s value is': ' ' + ABEL_KEYWORDS.VALUE_EQUALS
+		'.':                        ' ' + ABEL_KEYWORDS.PERIOD,
+		',':                        ' ' + ABEL_KEYWORDS.COMMA,
+		'start as':                 ABEL_KEYWORDS.START_AS,
+		'is checked':               ABEL_KEYWORDS.IS_CHECKED,
+		'is not checked':           ABEL_KEYWORDS.IS_NOT_CHECKED,
+		'when':                     ABEL_KEYWORDS.LISTEN_FOR,
+		'\'s value is less than':   ' ' + ABEL_KEYWORDS.VALUE_IS_LESS_THAN,
+		'\'s value is more than':   ' ' + ABEL_KEYWORDS.VALUE_IS_MORE_THAN,
+		'\'s value is not':         ' ' + ABEL_KEYWORDS.VALUE_DOES_NOT_EQUAL,
+		'\'s value is':             ' ' + ABEL_KEYWORDS.VALUE_EQUALS
 	};
 
 	function doAbelStuff(decreedElement) {
@@ -68,11 +68,8 @@
 		var validRawDecree = rawDecreeKeywords.filter(isValidDecreeFragment);
 
 		var statements = splitOnAnyOf(
-			[ABEL_KEYWORDS.PERIOD].concat(validRawDecree),
-			[
-				ABEL_KEYWORDS.PERIOD,
-				ABEL_KEYWORDS.COMMA
-			]
+			[ ABEL_KEYWORDS.PERIOD ].concat(validRawDecree), // Have to add one split item to the front for the algorithm to work
+			[ ABEL_KEYWORDS.PERIOD, ABEL_KEYWORDS.COMMA ]
 		);
 
 		var directives = statements.map(function(directive) {
