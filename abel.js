@@ -23,29 +23,6 @@
 		VALUE_IS_MORE_THAN:     'value_is_more_than'
 	};
 
-	var validRawKeywords = [
-		'i',
-		'start_as',
-		'is_checked',
-		'is_not_checked',
-		'hidden',
-		'showing',
-		'when',
-		'checked',
-		'selected',
-		'will',
-		'show',
-		'hide',
-		'is',
-		'%_PERIOD_%',
-		'%_COMMA_%',
-		'listen_for',
-		'value_equals',
-		'value_does_not_equal',
-		'value_is_less_than',
-		'value_is_more_than'
-	];
-
 	var fragmentReplacements = {
 		'.':                        ' ' + ABEL_KEYWORDS.PERIOD,
 		',':                        ' ' + ABEL_KEYWORDS.COMMA,
@@ -237,7 +214,7 @@
 
 	function isValidDecreeFragment(fragment) {
 		return (
-		isValidRawKeyword(fragment) || isSelector(fragment) || isStringValue(fragment)
+		isValidRawKeyword(fragment, ABEL_KEYWORDS) || isSelector(fragment) || isStringValue(fragment)
 		);
 	}
 
@@ -245,7 +222,12 @@
 		return input.startsWith('\'') && input.endsWith('\'');
 	}
 
-	function isValidRawKeyword(allegedlyValidKeyword) {
+	function isValidRawKeyword(allegedlyValidKeyword, dictionary) {
+
+		var validRawKeywords = Object.keys(dictionary).map(function(key) {
+			return dictionary[key];
+		});
+
 		return validRawKeywords.includes(allegedlyValidKeyword);
 	}
 
