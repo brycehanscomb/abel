@@ -210,7 +210,7 @@
 
 	function isSelector(fragment) {
 		return (
-		String(fragment).startsWith('#') && fragment.indexOf(' ') === -1
+		String(fragment).indexOf('#') === 0 && fragment.indexOf(' ') === -1
 		);
 	}
 
@@ -221,7 +221,7 @@
 	}
 
 	function isStringValue(input) {
-		return input.startsWith('\'') && input.endsWith('\'');
+		return (input[0] === '\'' && input[input.length - 1] === '\'');
 	}
 
 	function isValidRawKeyword(allegedlyValidKeyword, dictionary) {
