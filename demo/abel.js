@@ -210,7 +210,7 @@
 
 	function isSelector(fragment) {
 		return (
-		String(fragment).startsWith('#') && fragment.indexOf(' ') === -1
+			String(fragment).indexOf('#') === 0 && fragment.indexOf(' ') === -1
 		);
 	}
 
@@ -221,7 +221,7 @@
 	}
 
 	function isStringValue(input) {
-		return input.startsWith('\'') && input.endsWith('\'');
+		return (input[0] === '\'' && input[input.length - 1] === '\'');
 	}
 
 	function isValidRawKeyword(allegedlyValidKeyword, dictionary) {
@@ -235,10 +235,7 @@
 
 	function runDirective(directive, directivesList) {
 
-		var target = directive[0];
 		var action = directive[1];
-		var command = directive[2];
-		var valueToTestFor = directive[3];
 
 		switch(action) {
 			case ABEL_KEYWORDS.START_AS:
@@ -276,14 +273,12 @@
 	function doCreateListenerDirective(directive, nextDirective, directivesList) {
 
 		var target = directive[0];
-		var action = directive[1]; // should always be 'listen_for' in this function
 		var eventType = directive[2];
-		var valueToTestFor = directive[3];
 
 		var eventListener = eventListenerFactory(
 			target,
 			eventType,
-			valueToTestFor,
+			directive[3],
 			nextDirective,
 			directivesList
 		);
@@ -296,55 +291,53 @@
 
 	function eventListenerFactory(target, eventType, valueToTestFor, nextDirective, directivesList) {
 
-		var eventName;
+		var eventName = 'change';
 		var callback;
+
+		function invokeMethod() {
+			runDirective(nextDirective, directivesList);
+		}
 
 		switch(eventType) {
 			case ABEL_KEYWORDS.IS_CHECKED:
-				eventName = 'change';
 				callback = function(evt) {
 					if (target.checked === true) {
-						runDirective(nextDirective, directivesList);
+						invokeMethod();
 					}
 				};
 				break;
 			case ABEL_KEYWORDS.IS_NOT_CHECKED:
-				eventName = 'change';
 				callback = function(evt) {
 					if (target.checked === false) {
-						runDirective(nextDirective, directivesList);
+						invokeMethod();
 					}
 				};
 				break;
 			case ABEL_KEYWORDS.VALUE_EQUALS:
-				eventName = 'change';
 				callback = function(evt) {
 					if (String(target.value) === String(stringUtils.unquote(valueToTestFor))) {
-						runDirective(nextDirective, directivesList);
+						invokeMethod();
 					}
 				};
 				break;
 			case ABEL_KEYWORDS.VALUE_DOES_NOT_EQUAL:
-				eventName = 'change';
 				callback = function(evt) {
 					if (String(target.value) !== String(stringUtils.unquote(valueToTestFor))) {
-						runDirective(nextDirective, directivesList);
+						invokeMethod();
 					}
 				};
 				break;
 			case ABEL_KEYWORDS.VALUE_IS_LESS_THAN:
-				eventName = 'change';
 				callback = function(evt) {
 					if (parseInt(target.value, 10) < parseInt(String(stringUtils.unquote(valueToTestFor)), 10)) {
-						runDirective(nextDirective, directivesList);
+						invokeMethod();
 					}
 				};
 				break;
 			case ABEL_KEYWORDS.VALUE_IS_MORE_THAN:
-				eventName = 'change';
 				callback = function(evt) {
 					if (parseInt(target.value, 10) > parseInt(String(stringUtils.unquote(valueToTestFor)), 10)) {
-						runDirective(nextDirective, directivesList);
+						invokeMethod();
 					}
 				};
 				break;
