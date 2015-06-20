@@ -1,6 +1,6 @@
 (function(
 	DoublyLinkedList,
-    window
+	window
 ) {
 
 	'use strict';
@@ -76,38 +76,71 @@
 	}
 
 	var elementUtils = {
+
+		/**
+		 * Hides the `element` using inline CSS.
+		 *
+		 * @param {HTMLElement} element
+		 */
 		hide: function(element) {
 			element.style.display = 'none';
 		},
+
+		/**
+		 * Shows the `element` using inline CSS. Warning: this will set the element's style to it's default display, eg:
+		 * `<div>` will be `block`, and `<span>` will be `inline`.
+		 *
+		 * @param element
+		 */
 		show: function(element) {
-
-			function getComputedStyle(el) {
-				return window.getComputedStyle(el);
-			}
-
-			function defaultDisplay(tagName) {
-				return 'block';
-				// TODO: actually make this return the right value
-			}
 
 			var elementStyle = element.style;
 			var NONE = 'none';
+			var DISPLAY = 'display';
 
-			if (elementStyle.display === NONE) {
-				elementStyle.display = '';
+			/**
+			 * Get the default CSS display value of `nodeName` elements.
+			 *
+			 * @param {!string} nodeName - a tag name like 'div' or 'span' or 'input'
+			 * @returns {string}
+			 */
+			function getDefaultDisplay(nodeName) {
+
+				var tempElement = document.createElement(nodeName);
+				var display;
+
+				// create a temporary DOM node and see what it's display value is
+				document.body.appendChild(tempElement);
+				display = window.getComputedStyle(tempElement).getPropertyValue(DISPLAY);
+				tempElement.parentNode.removeChild(tempElement);
+				// --------------------------------------------------------------------
+
+				if(display == NONE) {
+					display = 'block';
+				}
+
+				return display;
 			}
 
-			if (getComputedStyle(element, '').getPropertyValue('display') === NONE) {
-				elementStyle.display = defaultDisplay(element.nodeName);
+			if (elementStyle[DISPLAY] === NONE) {
+				elementStyle[DISPLAY] = '';
+			}
+
+			if (window.getComputedStyle(element).getPropertyValue('display') === NONE) {
+				elementStyle[DISPLAY] = getDefaultDisplay(element.nodeName);
 			}
 		},
+
+		/**
+		 * Takes a querySelector string that starts with `'#'` and returns an element by it's id.
+		 *
+		 * @deprecated Use the native `document.querySelector` or even `document.getElementById` instead.
+		 *
+		 * @param {string } hashSelector
+		 * @returns {Element}
+		 */
 		getElementByHashSelector: function(hashSelector) {
-			/**
-			 * '#hello' -> <div id="hello"></div>
-			 */
-			return document.getElementById(
-				hashSelector.slice(1)
-			);
+			return document.querySelector(hashSelector);
 		}
 	};
 
