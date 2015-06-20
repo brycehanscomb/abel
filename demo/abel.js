@@ -1,5 +1,7 @@
 (function() {
 
+	'use strict';
+
 	var ABEL_KEYWORDS = {
 		I:                      'i',
 		START_AS:               'start_as',
@@ -39,11 +41,15 @@
 		'\'s value is':             ' ' + ABEL_KEYWORDS.VALUE_EQUALS
 	};
 
-	function doAbelStuff(decreedElement) {
+	function init(decreedElement) {
 
-		var abelDecree = decreedElement.getAttribute('data-abel').replace(/\s+/g, ' '); // squeeze all whitespace (@see http://stackoverflow.com/a/6163180/1063035)
+		var abelDecree = decreedElement
+			.getAttribute('data-abel')
+			.replace(/\s+/g, ' '); // squeeze all whitespace (@see http://stackoverflow.com/a/6163180/1063035)
 		var rawDecreeKeywords = replaceFragments(abelDecree);
-		var validRawDecree = rawDecreeKeywords.split(' ').filter(isValidDecreeFragment);
+		var validRawDecree = rawDecreeKeywords
+			.split(' ')
+			.filter(isValidDecreeFragment);
 
 		var directivesList = DoublyLinkedList.forge();
 
@@ -54,23 +60,17 @@
 
 		statements
 			.map(function(statement) {
-				return getDirectiveFromStatement(statement, decreedElement)
+				return directiveUtils.getDirectiveFromStatement(statement, decreedElement);
 			})
 			.forEach(directivesList.add, directivesList);
 
 		directivesList.forEach(function(directive) {
-			if (shouldDirectiveBeRunStraightAway(directive)) {
-				runDirective(directive, directivesList);
+			if (directiveUtils.shouldDirectiveBeRunStraightAway(directive)) {
+				directiveUtils.runDirective(directive, directivesList);
 			}
 		});
 
 	}
-
-
-
-
-
-
 
 	var elementUtils = {
 		hide: function(element) {
@@ -85,10 +85,10 @@
 
 			elementStyle.display == NONE && (elementStyle.display = '');
 			if (getComputedStyle(element, '').getPropertyValue("display") == NONE) {
-				elementStyle.display = defaultDisplay(element.nodeName)
+				elementStyle.display = defaultDisplay(element.nodeName);
 			}
 		},
-		getElementByHashSelector: function (hashSelector) {
+		getElementByHashSelector: function(hashSelector) {
 			/**
 			 * '#hello' -> <div id="hello"></div>
 			 */
@@ -113,18 +113,61 @@
 		}
 	};
 
+	var directiveUtils = {
+		shouldDirectiveBeRunStraightAway: function (directive) {
+			var action = directive[1];
+			return action !== ABEL_KEYWORDS.WILL;
+		},
+		getDirectiveFromStatement: function(statement, abelElement) {
 
+			var result = statement.slice(); // copy the array of strings to mutably work on
 
+			// the selector needs to be at the start, not second!
+			if (isSelector(result[0]) === false && isSelector(result[1]) === true) {
 
+				// put the second item into first place
+				result.splice(
+					1, 0,
+					result.shift() // removes the first item from the array and returns it for use in `splice()`
+				);
+			}
 
-	function shouldDirectiveBeRunStraightAway(directive) {
+			result = result.map(function(keyword) {
+				if (isSelector(keyword)) {
+					return elementUtils.getElementByHashSelector(keyword);
+				} else {
+					switch(keyword) {
+						case ABEL_KEYWORDS.I:
+							return abelElement;
+						default:
+							return keyword;
+					}
+				}
+			});
 
-		var target = directive[0];
-		var action = directive[1];
-		var command = directive[2];
+			return result;
+		},
+		runDirective: function(directive, directivesList) {
 
-		return action !== 'will';
-	}
+			var action = directive[1];
+
+			switch(action) {
+				case ABEL_KEYWORDS.START_AS:
+				case ABEL_KEYWORDS.WILL:
+					doSimpleActionDirective(directive);
+					break;
+				case ABEL_KEYWORDS.LISTEN_FOR:
+					doCreateListenerDirective(
+						directive,
+						directivesList.getNext(
+							directive
+						),
+						directivesList
+					);
+					break;
+			}
+		}
+	};
 
 	function splitOnAnyOf(collection, splitItems) {
 
@@ -137,7 +180,7 @@
 		 * Have to add a split item to the beginning for the algorithm to work
 		 */
 		if (splitItems.includes(collection[0]) === false) {
-			haystack = [ splitItems[0]].concat(haystack);
+			haystack = [ splitItems[0] ].concat(haystack);
 		}
 
 		for (var ii = 0; ii < haystack.length; ii++) {
@@ -166,36 +209,6 @@
 		return results;
 	}
 
-	function getDirectiveFromStatement(statement, abelElement) {
-
-		var result = statement.map(function(keyword) {
-			// todo: fix this
-			return keyword;
-		});
-
-		// the selector needs to be at the start, not second!
-		if (isSelector(result[0]) === false && isSelector(result[1]) === true) {
-			var temp = result[0];
-			result[0] = result[1];
-			result[1] = temp;
-		}
-
-		result = result.map(function(keyword) {
-			if (isSelector(keyword)) {
-				return elementUtils.getElementByHashSelector(keyword);
-			} else {
-				switch(keyword) {
-					case ABEL_KEYWORDS.I:
-						return abelElement;
-					default:
-						return keyword;
-				}
-			}
-		});
-
-		return result;
-	}
-
 	function replaceFragments(rawDecree) {
 		var result = rawDecree;
 
@@ -210,52 +223,6 @@
 		}
 
 		return result;
-	}
-
-	function isSelector(fragment) {
-		return (
-			String(fragment).indexOf('#') === 0 && fragment.indexOf(' ') === -1
-		);
-	}
-
-	function isValidDecreeFragment(fragment) {
-		return (
-		isValidRawKeyword(fragment, ABEL_KEYWORDS) || isSelector(fragment) || isStringValue(fragment)
-		);
-	}
-
-	function isStringValue(input) {
-		return (input[0] === '\'' && input[input.length - 1] === '\'');
-	}
-
-	function isValidRawKeyword(allegedlyValidKeyword, dictionary) {
-
-		var validRawKeywords = Object.keys(dictionary).map(function(key) {
-			return dictionary[key];
-		});
-
-		return validRawKeywords.includes(allegedlyValidKeyword);
-	}
-
-	function runDirective(directive, directivesList) {
-
-		var action = directive[1];
-
-		switch(action) {
-			case ABEL_KEYWORDS.START_AS:
-			case ABEL_KEYWORDS.WILL:
-				doSimpleActionDirective(directive);
-				break;
-			case ABEL_KEYWORDS.LISTEN_FOR:
-				doCreateListenerDirective(
-					directive,
-					directivesList.getNext(
-						directive
-					),
-					directivesList
-				);
-				break;
-		}
 	}
 
 	function doSimpleActionDirective(directive) {
@@ -299,47 +266,47 @@
 		var callback;
 
 		function invokeMethod() {
-			runDirective(nextDirective, directivesList);
+			directiveUtils.runDirective(nextDirective, directivesList);
 		}
 
 		switch(eventType) {
 			case ABEL_KEYWORDS.IS_CHECKED:
-				callback = function(evt) {
+				callback = function() {
 					if (target.checked === true) {
 						invokeMethod();
 					}
 				};
 				break;
 			case ABEL_KEYWORDS.IS_NOT_CHECKED:
-				callback = function(evt) {
+				callback = function() {
 					if (target.checked === false) {
 						invokeMethod();
 					}
 				};
 				break;
 			case ABEL_KEYWORDS.VALUE_EQUALS:
-				callback = function(evt) {
+				callback = function() {
 					if (String(target.value) === String(stringUtils.unquote(valueToTestFor))) {
 						invokeMethod();
 					}
 				};
 				break;
 			case ABEL_KEYWORDS.VALUE_DOES_NOT_EQUAL:
-				callback = function(evt) {
+				callback = function() {
 					if (String(target.value) !== String(stringUtils.unquote(valueToTestFor))) {
 						invokeMethod();
 					}
 				};
 				break;
 			case ABEL_KEYWORDS.VALUE_IS_LESS_THAN:
-				callback = function(evt) {
+				callback = function() {
 					if (parseInt(target.value, 10) < parseInt(String(stringUtils.unquote(valueToTestFor)), 10)) {
 						invokeMethod();
 					}
 				};
 				break;
 			case ABEL_KEYWORDS.VALUE_IS_MORE_THAN:
-				callback = function(evt) {
+				callback = function() {
 					if (parseInt(target.value, 10) > parseInt(String(stringUtils.unquote(valueToTestFor)), 10)) {
 						invokeMethod();
 					}
@@ -350,15 +317,81 @@
 
 		}
 
-		return [
-			eventName,
-			callback
-		];
+		return [ eventName, callback ];
 	}
+
+	/* Assertions */
+
+	function isSelector(fragment) {
+		return (
+		String(fragment).indexOf('#') === 0 &&
+		fragment.indexOf(' ') === -1
+		);
+	}
+
+	function isValidDecreeFragment(fragment) {
+		return (
+		isValidRawKeyword(fragment, ABEL_KEYWORDS) ||
+		isSelector(fragment) ||
+		isStringValue(fragment)
+		);
+	}
+
+	/**
+	 * Determines whether `input` is a string-within-a-string. That is, a string that includes quotes around it inside
+	 * the string itself.
+	 *
+	 * @example
+	 * // returns `true`
+	 * isStringValue("'hello world'")
+	 *
+	 * @example
+	 * // returns true
+	 * isStringValue('\'hello world\'')
+	 *
+	 * @example
+	 * // returns false
+	 * isStringValue('hello world')
+	 *
+	 * @example
+	 * // returns false
+	 * isStringValue('5')
+	 *
+	 * @param {!string} input - a string that may or may not be surrounded with single-quotes inside the string.
+	 * @returns {boolean}
+	 */
+	function isStringValue(input) {
+
+		if (typeof input !== 'string') {
+			throw new TypeError('argument ' + input + ' was not of required type String');
+		}
+
+		return (
+		input[0] === '\'' &&
+		input[input.length - 1] === '\''
+		);
+	}
+
+	function isValidRawKeyword(allegedlyValidKeyword, dictionary) {
+
+		var validRawKeywords = Object.keys(dictionary).map(function(key) {
+			return dictionary[key];
+		});
+
+		return validRawKeywords.includes(allegedlyValidKeyword);
+	}
+
+	/* End Assertions */
+
+
+
+	/* Kickoff */
 
 	Array.prototype.forEach.call(
 		document.querySelectorAll('[data-abel]'),
-		doAbelStuff
+		init
 	);
+
+	/* End Kickoff */
 
 })();
