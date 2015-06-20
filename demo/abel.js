@@ -5,6 +5,10 @@
 
 	'use strict';
 
+	if (!DoublyLinkedList) {
+		throw new ReferenceError('Abel requires https://github.com/adriano-di-giovanni/doubly-linked-list-js to be available as a dependency. Please make sure you include it before this script.');
+	}
+
 	var ABEL_KEYWORDS = {
 		I:                      'i',
 		START_AS:               'start_as',
@@ -366,10 +370,21 @@
 
 	/* Assertions */
 
+	/**
+	 * Determines whether `fragment` is a valid value for `document.getQuerySelector` when querying for an element by ID
+	 *
+	 * @param {!string} fragment
+	 * @returns {boolean}
+	 */
 	function isSelector(fragment) {
+
+		if ((typeof fragment) !== 'string') {
+			throw new TypeError('Argument fragment (' + fragment + ') was not of required type String');
+		}
+
 		return (
-		String(fragment).indexOf('#') === 0 &&
-		fragment.indexOf(' ') === -1
+		fragment.indexOf('#') === 0 && // must start with a `#`
+		fragment.indexOf(' ') === -1 // not allowed to have spaces
 		);
 	}
 
@@ -406,7 +421,7 @@
 	 */
 	function isStringValue(input) {
 
-		if (typeof input !== 'string') {
+		if ((typeof input) !== 'string') {
 			throw new TypeError('argument ' + input + ' was not of required type String');
 		}
 
@@ -416,7 +431,25 @@
 		);
 	}
 
+	/**
+	 * Determines whether `allegedlyValidKeyword` can be found as a value in the keys of `dictionary`.
+	 *
+	 * @param {!string} allegedlyValidKeyword
+	 * @param {!Object<string, string>} dictionary
+	 */
 	function isValidRawKeyword(allegedlyValidKeyword, dictionary) {
+
+		if (allegedlyValidKeyword === null || dictionary === null) {
+			throw new ReferenceError('No arguments in this function can be null. Passed arguments = ' + allegedlyValidKeyword + ' and ' + dictionary);
+		}
+
+		if ((typeof allegedlyValidKeyword) !== 'string') {
+			throw new TypeError('Argument allegedlyValidKeyword (' + allegedlyValidKeyword + ') was not of required type String');
+		}
+
+		if ((typeof dictionary) !== 'object') {
+			throw new TypeError('Argument dictionary (' + dictionary + ') was not of required type Object');
+		}
 
 		var validRawKeywords = Object.keys(dictionary).map(function(key) {
 			return dictionary[key];
@@ -431,6 +464,9 @@
 
 	/* Kickoff */
 
+	/**
+	 * Find all the elements with a [data-abel] attribute on them and calls `init` on each.
+	 */
 	Array.prototype.forEach.call(
 		document.querySelectorAll('[data-abel]'),
 		init
