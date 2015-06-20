@@ -1,4 +1,7 @@
-(function() {
+(function(
+	DoublyLinkedList,
+    window
+) {
 
 	'use strict';
 
@@ -77,14 +80,24 @@
 			element.style.display = 'none';
 		},
 		show: function(element) {
-			/**
-			 * Adapted from Zepto.js source code
-			 */
+
+			function getComputedStyle(el) {
+				return window.getComputedStyle(el);
+			}
+
+			function defaultDisplay(tagName) {
+				return 'block';
+				// TODO: actually make this return the right value
+			}
+
 			var elementStyle = element.style;
 			var NONE = 'none';
 
-			elementStyle.display == NONE && (elementStyle.display = '');
-			if (getComputedStyle(element, '').getPropertyValue("display") == NONE) {
+			if (elementStyle.display === NONE) {
+				elementStyle.display = '';
+			}
+
+			if (getComputedStyle(element, '').getPropertyValue('display') === NONE) {
 				elementStyle.display = defaultDisplay(element.nodeName);
 			}
 		},
@@ -183,18 +196,18 @@
 			haystack = [ splitItems[0] ].concat(haystack);
 		}
 
-		for (var ii = 0; ii < haystack.length; ii++) {
-			if (splitItems.includes(haystack[ii])) {
-				delimitIndices.push([startIndex + 1, ii]);
-				startIndex = ii;
+		haystack.forEach(function(el, index) {
+			if (splitItems.includes(haystack[index])) {
+				delimitIndices.push([startIndex + 1, index]);
+				startIndex = index;
 			}
-		}
+		});
 
 		var results = [];
 
 		delimitIndices.forEach(function(indicesBounds) {
 			if (indicesBounds[1] - indicesBounds[0] > 1) {
-				results.push( haystack.slice(indicesBounds[0], indicesBounds[1]) )
+				results.push( haystack.slice(indicesBounds[0], indicesBounds[1]) );
 			}
 		});
 
@@ -212,15 +225,13 @@
 	function replaceFragments(rawDecree) {
 		var result = rawDecree;
 
-		for (var prop in fragmentReplacements) {
-			if (fragmentReplacements.hasOwnProperty(prop)) {
-				result = stringUtils.replaceAll(
-					result,
-					prop,
-					fragmentReplacements[prop]
-				);
-			}
-		}
+		Object.keys(fragmentReplacements).forEach(function(prop) {
+			result = stringUtils.replaceAll(
+				result,
+				prop,
+				fragmentReplacements[prop]
+			);
+		});
 
 		return result;
 	}
@@ -394,4 +405,7 @@
 
 	/* End Kickoff */
 
-})();
+}(
+	DoublyLinkedList,
+	window
+));
