@@ -3,7 +3,7 @@
 A micro-library that lets you easily show and hide elements based on the values 
 of form controls and user interactions elsewhere on the page.
 
-** Abel is great when you want to make things happen in the DOM but don't want
+**Abel is great when you want to make things happen in the DOM but don't want
 to load a view library (like React or Angular) or templating framework (like 
 Handlebars or Knockout).**
 
@@ -93,6 +93,6 @@ For a decree to be valid, the following rules apply:
 * `"when #some_input's value is less than '10', i will show."`
 * `"when #some_input's value is more than '10', i will hide."`
 
-** Note that all value comparisons must be in single quotes, 
+**Note that all value comparisons must be in single quotes, 
 eg: `'10'`, not `10`. Valid number-strings will be converted to numbers 
-internally. **
+internally.**
