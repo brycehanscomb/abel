@@ -1,6 +1,9 @@
 'use strict';
 
 import { parseDecree } from './lexer';
+import { executeStatement } from './statement-utils.js';
+
+const isNotSet = require('is-not-set');
 
 const STRINGS = {
 	ERRORS: {
@@ -12,24 +15,55 @@ if (typeof document === 'undefined') {
 	throw new ReferenceError(STRINGS.ERRORS.MISSING_DOCUMENT_REFERENCE);
 }
 
-function go() {
-	///**
-	// * Find all the elements with a [data-abel] attribute on them and calls `init` on each.
-	// */
-	//Array.prototype.forEach.call(
-	//	document.querySelectorAll('[data-abel]'),
-	//	Abel
-	//);
-	Abel(document.querySelector('[data-abel]'))
-}
-
 /**
  * @param {HTMLElement} element
  */
 function Abel(element) {
-	//console.log(element);
-	console.log(parseDecree(element.getAttribute('data-abel')));
+
+    function isElement(o){
+        return (
+            typeof HTMLElement === "object" ? o instanceof HTMLElement : //DOM2
+            o && typeof o === "object" && o !== null && o.nodeType === 1 && typeof o.nodeName==="string"
+        );
+    }
+
+    const initialError = 'Abel requires a reference to a DOM element to be passed into the constructor, but "' + element + '" was passed instead';
+
+    if (isNotSet(element)) {
+        throw new ReferenceError(initialError);
+    }
+
+    if (!isElement(element)) {
+        throw new TypeError(initialError);
+    }
+
+    const rawDecree = element.getAttribute('data-abel');
+
+    if (isNotSet(rawDecree)) {
+        throw new ReferenceError('Cannot run Abel on element ' + element + ' because it is missing the required "data-abel" attribute.');
+    }
+
+    const decree = parseDecree(rawDecree);
+
+    decree.forEach(function(statement) {
+        executeStatement(statement, element);
+    });
 }
+
+/**
+ * @static
+ * @methodOf {Abel}
+ */
+function go() {
+    /**
+     * Find all the elements with a [data-abel] attribute on them and calls `init` on each.
+     */
+    Array.prototype.forEach.call(
+    	document.querySelectorAll('[data-abel]'),
+    	Abel
+    );
+}
+
 Abel.go = go;
 
 /**

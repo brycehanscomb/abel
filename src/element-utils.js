@@ -55,6 +55,18 @@ export function show(element) {
 }
 
 /**
+ * Finds any `#selector`s in a statement and replaces them with actual DOM references
+ * @param input
+ */
+export function getElementFromSelector(input) {
+    if (input.startsWith('#')) {
+        return document.querySelector(input);
+    } else {
+        return input;
+    }
+}
+
+/**
  * Takes a querySelector string that starts with `'#'` and returns an element by it's id.
  *
  * @deprecated Use the native `document.querySelector` or even `document.getElementById` instead.

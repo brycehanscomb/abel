@@ -4,6 +4,8 @@ const isNotSet = require('is-not-set');
 const isString = require('is-string');
 const isSet = require('is-it-set');
 
+import { parseTokens } from './token-utils.js';
+
 const STRINGS = {
 	ERRORS: {
 		MISSING_REQUIRED_INPUT: `Required argument 'input' was not provided.`,
@@ -12,6 +14,8 @@ const STRINGS = {
 };
 
 /**
+ * Separates a decree into its individual statements (still raw, un-parsed and un-formatted)
+ *
  * @param {!string} input
  * @return {Array.<string>}
  */
@@ -28,21 +32,21 @@ function getStatementStrings(input) {
 }
 
 /**
- * Finds any `#selector`s in a statement and replaces them with actual DOM references
- * @param input
+ * @param {string} statement
+ * @returns {Array}
  */
-function getElementFromSelector(input) {
-	if (input.startsWith('#')) {
-		return document.querySelector(input);
-	} else {
-		return input;
-	}
-}
-
 function parseStatement(statement) {
-	return eliminateUselessItems(statement.split(','));
+    return eliminateUselessItems(
+        statement.split(',')
+    ).map(parseTokens);
 }
 
+/**
+ * Removes whitespace, and line breaks from each item, and returns only those who still have a value
+ *
+ * @param {Array.<string>} inputs
+ * @returns {Array.<string>}
+ */
 function eliminateUselessItems(inputs) {
 	return inputs.map(trim).filter(isSet);
 }
