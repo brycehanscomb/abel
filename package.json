@@ -1,10 +1,11 @@
 {
   "name": "abel",
   "version": "2.0.0",
-  "description": "The  declarative DOM manipulator",
-  "main": "abel.js",
+  "description": "The declarative DOM manipulator",
+  "main": "lib/abel.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepublish": "gulp build"
   },
   "repository": {
     "type": "git",
@@ -18,13 +19,11 @@
   "homepage": "https://github.com/brycehanscomb/abel#readme",
   "devDependencies": {
     "babelify": "~5.0.3",
-    "browser-sync": "^1.7.1",
     "browserify": "^6.3.3",
     "gulp": "^3.0.0",
     "gulp-rename": "^1.2.0",
     "lodash": "^2.4.1",
     "rimraf": "~2.2.8",
-    "watchify": "^2.1.1",
     "vinyl-source-stream": "^1.0.0"
   },
   "dependencies": {
