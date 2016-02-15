@@ -5,20 +5,14 @@ import { executeStatement } from './statement-utils.js';
 
 const isNotSet = require('is-not-set');
 
-const STRINGS = {
-	ERRORS: {
-		MISSING_DOCUMENT_REFERENCE: 'Abel could not be initialised: the document object was undefined. Please ensure you are running Abel from a browser context.'
-	}
-};
-
-if (typeof document === 'undefined') {
-	throw new ReferenceError(STRINGS.ERRORS.MISSING_DOCUMENT_REFERENCE);
-}
-
 /**
  * @param {HTMLElement} element
  */
 function Abel(element) {
+
+    if (typeof document === 'undefined') {
+        throw new ReferenceError('Abel could not be initialised: the document object was undefined. Please ensure you are running Abel from a browser context.');
+    }
 
     function isElement(o){
         return (
