@@ -14,6 +14,7 @@ import {
     SHOWING,
     SHOW
 } from './tokens.js';
+import { replaceAll } from './string-utils';
 
 const isString = require('is-string');
 const isNotSet = require('is-not-set');
@@ -56,16 +57,6 @@ export function parseTokens(statement) {
      */
     fragmentReplacements[`i ${START_AS} ${HIDDEN}`] = `${DO_ACTION} ${HIDE}`;
     fragmentReplacements[`i ${START_AS} ${SHOWING}`] = `${DO_ACTION} ${SHOW}`;
-
-    function replaceAll(input, replaceThis, withThis) {
-        let res = input;
-
-        while(res.indexOf(replaceThis) > -1) {
-            res = res.replace(replaceThis, withThis);
-        }
-
-        return res;
-    }
 
     let result = statement;
 

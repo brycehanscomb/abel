@@ -2,45 +2,87 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8">
-	<!--<script src="polyfills.js"></script>-->
-	<!--<script src="DoublyLinkedList.js"></script>-->
+	<title>
+        Abel Demo
+    </title>
+    <style type="text/css">
+        body {
+            margin: 40px auto;
+            max-width: 650px;
+            line-height: 1.6;
+            font-size: 18px;
+            color: #444;
+            padding: 0 10px;
+            font-family: sans-serif;
+        }
+
+        h1, h2, h3 {
+            line-height: 1.2
+        }
+
+        hr {
+            margin: 3em 0;
+        }
+
+        button {
+            display: block;
+        }
+    </style>
 </head>
 
 <body>
+
+    <h1>
+        Abel Demos
+    </h1>
+
+    <hr>
+
+    <h3>
+        Reacting to checkbox values
+    </h3>
 
 	<label>
 		<input type="checkbox" id="license_agreement_agreed">
 		I agree to the license agreement
 	</label>
 
-	<button data-abel="
+    <p data-abel="
 	    I start as hidden.
 	    when #license_agreement_agreed is checked, I will show.
 	    when #license_agreement_agreed is not checked, I will hide.
     ">
-		Continue
-	</button>
+        <button>
+            Continue
+        </button>
+    </p>
 
     <p data-abel="
         when #license_agreement_agreed is checked, I will hide.
         when #license_agreement_agreed is not checked, I will show.
     ">
-        Ay, yo! You should agree before you continue...
+        <i>
+            Ay, yo! You should agree before you continue...
+        </i>
     </p>
 
 	<hr>
 
-	<select id="credit_card_method">
-		<option value="mastercard">
-			Mastercard
-		</option>
-		<option value="visa">
-			Visa
-		</option>
-		<option value="amex">
-			American Express
-		</option>
-	</select>
+    <h3>
+        Reacting to particular values
+    </h3>
+
+    <label>
+        Select payment method:&emsp;
+        <select id="credit_card_method">
+            <option value="mastercard">
+                Mastercard
+            </option>
+            <option value="visa">
+                Visa
+            </option>
+        </select>
+    </label>
 
 	<p id="surcharge_disclaimer" data-abel="
 	    I start as hidden.
@@ -52,8 +94,12 @@
 
 	<hr>
 
+    <h3>
+        Reacting to greater than / less than
+    </h3>
+
 	<label>
-		Max price:
+		Max price (minimum $10):
 		<input type="number" id="max_price" value="10">
 	</label>
 

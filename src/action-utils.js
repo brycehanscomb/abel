@@ -29,7 +29,7 @@ export function listenForUncheck(element, callback) {
  */
 export function listenForMatchedValue(element, value, callback) {
     element.addEventListener('input', function(evt) {
-        if (element.value === value) {
+        if (element.value == value) {
             callback();
         }
     });

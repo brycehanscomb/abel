@@ -1,4 +1,5 @@
 import { show, hide } from './element-utils.js';
+import { replaceAll } from './string-utils';
 import {
     listenForCheck,
     listenForUncheck,
@@ -64,6 +65,14 @@ function executeListener(listenerFragment, callback) {
     const targetElement = document.querySelector(substatement[1]);
     const targetCondition = substatement[2];
 
+    /**
+     * the rest of the array's values are anything that contained a space, so we need to put them
+     * back together eg: "some required value" got split to ["some", "required", "value"].
+     *
+     * We also unquote the values because they are interpreted as strings anyway ('value' -> value)
+     */
+    const conditionValue = replaceAll(substatement.slice(3).join(' '), '\'', '');
+
     switch(targetCondition) {
         case IS_CHECKED:
             listenForCheck(targetElement, callback);
@@ -72,10 +81,17 @@ function executeListener(listenerFragment, callback) {
             listenForUncheck(targetElement, callback);
             break;
         case VALUE_EQUALS:
+            listenForMatchedValue(targetElement, conditionValue, callback);
+            break;
         case VALUE_DOES_NOT_EQUAL:
+            listenForUnmatchedValue(targetElement, conditionValue, callback);
+            break;
         case VALUE_IS_LESS_THAN:
+            listenForLessThan(targetElement, conditionValue, callback);
+            break;
         case VALUE_IS_MORE_THAN:
-            throw new Error('Condition ' + targetCondition + ' has not been implemented yet');
+            listenForGreaterThan(targetElement, conditionValue, callback);
+            break;
         default:
             throw new RangeError('Unknown condition ' + targetCondition);
     }
