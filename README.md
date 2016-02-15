@@ -68,6 +68,21 @@ Note that if you have a very slow website, elements that Abel will hide (when it
 visible for a short time until the page actually gets to the `Abel.go()` block. If this happens, you
 basically just need to [make your web pages load faster](https://developers.google.com/speed/).
 
+#### Advanced-Mode: As An npm Module
+
+If you need more fine-grained control over the items that Abel controls, you can pass in a reference
+to a DOM node manually:
+
+```js
+// Make Abel available for use
+var Abel = require('abel');
+
+// Call Abel on a single element (make sure it has a `[data-abel]` attribute with some statements)
+Abel( document.getElementById('some-element') );
+```
+
+Of course, you can still call `Abel.go()` at any time to automagically initialise all Abel statements.
+
 ### Usage
 
 Using ordinary strings with specific keywords in the `data-abel` attribute of an element, Abel will 
