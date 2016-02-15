@@ -16,6 +16,23 @@ Using ordinary strings with specific keywords in the `data-abel` attribute of an
 element, Abel will invisibly do what you ask and your page will react to the 
 interactions you specify.
 
+### Installation
+
+#### Easy-Mode: In-Browser Automatic Usage
+
+Add the following code to your page (just before `</body>`):
+
+```html
+<script src="path/to/abel.js"></script>
+<script> Abel.go(); </script>
+```
+
+This will load Abel and do everything automatically. 
+
+Note that if you have a very slow website, elements that Abel will hide (when it's loaded) might be 
+visible for a short time until the page actually gets to the `Abel.go()` block. If this happens, you
+basically just need to [make your web pages load faster](https://developers.google.com/speed/).
+
 ### A Simple Example
 
 Let's say you've got a signup form and the user shouldn't be able to submit 
