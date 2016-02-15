@@ -2,76 +2,123 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8">
-	<script src="polyfills.js"></script>
-	<script src="DoublyLinkedList.js"></script>
+	<title>
+        Abel Demo
+    </title>
+    <style type="text/css">
+        body {
+            margin: 40px auto;
+            max-width: 650px;
+            line-height: 1.6;
+            font-size: 18px;
+            color: #444;
+            padding: 0 10px;
+            font-family: sans-serif;
+        }
+
+        h1, h2, h3 {
+            line-height: 1.2
+        }
+
+        hr {
+            margin: 3em 0;
+        }
+
+        button {
+            display: block;
+        }
+    </style>
 </head>
 
 <body>
+
+    <h1>
+        Abel Demos
+    </h1>
+
+    <hr>
+
+    <h3>
+        Reacting to checkbox values
+    </h3>
 
 	<label>
 		<input type="checkbox" id="license_agreement_agreed">
 		I agree to the license agreement
 	</label>
 
-	<button data-abel="
-	    i start as hidden.
-	    when #license_agreement_agreed is checked, i will show.
-	    when #license_agreement_agreed is not checked, i will hide.
+    <p data-abel="
+	    I start as hidden.
+	    when #license_agreement_agreed is checked, I will show.
+	    when #license_agreement_agreed is not checked, I will hide.
     ">
-		Continue
-	</button>
+        <button>
+            Continue
+        </button>
+    </p>
 
     <p data-abel="
-        when #license_agreement_agreed is checked, i will hide.
-        when #license_agreement_agreed is not checked, i will show.
+        when #license_agreement_agreed is checked, I will hide.
+        when #license_agreement_agreed is not checked, I will show.
     ">
-        Ay, yo! You should agree before you continue...
+        <i>
+            Ay, yo! You should agree before you continue...
+        </i>
     </p>
 
 	<hr>
 
-	<select id="credit_card_method">
-		<option value="mastercard">
-			Mastercard
-		</option>
-		<option value="visa">
-			Visa
-		</option>
-		<option value="amex">
-			American Express
-		</option>
-	</select>
+    <h3>
+        Reacting to particular values
+    </h3>
+
+    <label>
+        Select payment method:&emsp;
+        <select id="credit_card_method">
+            <option value="mastercard">
+                Mastercard
+            </option>
+            <option value="visa">
+                Visa
+            </option>
+        </select>
+    </label>
 
 	<p id="surcharge_disclaimer" data-abel="
-	    i start as hidden.
-	    when #credit_card_method's value is 'visa', i will show.
-	    when #credit_card_method's value is not 'visa', i will hide.
+	    I start as hidden.
+	    when #credit_card_method's value is 'visa', I will show.
+	    when #credit_card_method's value is not 'visa', I will hide.
     ">
 		There will be a Surcharge for using Visa cards.
 	</p>
 
 	<hr>
 
+    <h3>
+        Reacting to greater than / less than
+    </h3>
+
 	<label>
-		Max price:
+		Max price (minimum $10):
 		<input type="number" id="max_price" value="10">
 	</label>
 
 	<p id="price_shame_notice" data-abel="
-	    i start as hidden.
-	    when #max_price's value is less than '10', i will show.
-	    when #max_price's value is '10', i will hide.
-	    when #max_price's value is more than '10', i will hide.
+	    I start as hidden.
+	    when #max_price's value is less than 10, I will show.
+	    when #max_price's value is 10, I will hide.
+	    when #max_price's value is more than 10, I will hide.
     ">
 		You should pay more than that!
 	</p>
 
 	<p id="price_helper_prompt" data-abel="
-	    when #max_price's value is not '10', i will hide.
+	    when #max_price's value is not 10, I will hide.
     ">
 		Don't forget to change your max price!
 	</p>
 
-	<script src="abel.js"></script>
+	<script src="../lib/abel.js"></script>
+	<script>Abel.go();</script>
 </body>
 </html>
