@@ -1,6 +1,6 @@
 {
-  "name": "abel",
-  "version": "2.0.0",
+  "name": "abel-dom",
+  "version": "2.0.1",
   "description": "The declarative DOM manipulator",
   "main": "lib/abel.js",
   "scripts": {

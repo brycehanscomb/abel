@@ -96,8 +96,7 @@ For a decree to be valid, the following rules apply:
 
 1. All statements are lowercase (however, you can use `I` as well as `i`)
 2. All statements must end with a period / full stop (`.`)
-3. If a statement starts with `when`, there must be a comma (`,`) and a space 
-   before the `i will show` or `i will hide`.
+3. If a statement starts with `when`, there must be a comma (`,`) and a space before the `i will show` or `i will hide`.
    
 #### Statement Syntax
 
