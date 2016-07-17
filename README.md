@@ -1,10 +1,11 @@
 # Abel - the declarative DOM manipulator
 
 > "I need to show and hide parts of this webpage when the user interacts with 
-> these form controls. And I don't want to load *jQuery, Angular or Vue* to do 
-> it!"
+> these form controls. And I don't want to load jQuery, Angular or Vue to do it!"
 
-— People who should use Abel
+— *People who should use Abel*
+
+---
 
 Abel is micro-library that lets you easily show and hide elements on a page 
 based on the values of form controls and user interactions elsewhere. 
@@ -53,6 +54,12 @@ line to the code:
 
 ### For Checkboxes and Radio Buttons
 
+Basic syntax:
+
+> **[show | hide]** when **[some id]**'s value **[is | is not]** checked
+
+Examples:
+
 * `"show when #some_checkbox is checked"`
 * `"hide when #some_checkbox is not checked"`
 
@@ -60,7 +67,9 @@ line to the code:
 
 Basic syntax:
 
-> [show | hide] when [some css selector]'s value [is | is not] [value]
+> **[show | hide]** when **[some id]**'s value **[is | is not]** **[some value]**
+
+Examples:
 
 * `"show when #some_input's value is 'hello'"`
 * `"hide when #some_input's value is not 'hello'"`
@@ -69,11 +78,9 @@ Basic syntax:
 * `"hide when #some_input's value is empty"`
 * `"hide when #some_input's value is not empty"`
 
-## How To Use
+## Installation
 
-### Installation
-
-#### Easy-Mode: In-Browser Automatic Usage
+### Easy-Mode: In-Browser Automatic Usage
 
 Add the following code to your page (just before `</body>`):
 
@@ -88,7 +95,7 @@ Note that if you have a very slow website, elements that Abel will hide (when
 loaded) might be visible for a short time until the page actually gets to the 
 `Abel.go()` block. If this happens, you basically just need to [make your web pages load faster](https://developers.google.com/speed/).
 
-#### Advanced-Mode: As An npm Module
+### Advanced-Mode: As An npm Module
 
 If you need more fine-grained control over the items that Abel controls, you can
 pass in a reference to a DOM node manually:
@@ -104,10 +111,10 @@ Abel( document.getElementById('some-element') );
 Of course, you can still call `Abel.go()` at any time to automagically 
 initialise all Abel statements.
 
-### Usage
+## Notes On Usage
 
 Using ordinary strings with specific keywords in the `data-abel` attribute of an
 element, your page will react to the interactions you specify.
 
 The code is not case-sensitive, and the periods between multiple statements are 
-optional. Any numerical 
+optional. 
