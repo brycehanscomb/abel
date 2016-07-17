@@ -71,12 +71,12 @@ Basic syntax:
 
 Examples:
 
-* `"show when #some_input's value is 'hello'"`
-* `"hide when #some_input's value is not 'hello'"`
-* `"show when #some_input's value is less than 10"`
-* `"hide when #some_input's value is more than 10"`
-* `"hide when #some_input's value is empty"`
-* `"hide when #some_input's value is not empty"`
+* `"show when #some_input is 'hello'"`
+* `"hide when #some_input is not 'hello'"`
+* `"show when #some_input is less than 10"`
+* `"hide when #some_input is more than 10"`
+* `"hide when #some_input is empty"`
+* `"hide when #some_input is not empty"`
 
 ## Installation
 
@@ -118,3 +118,5 @@ element, your page will react to the interactions you specify.
 
 The code is not case-sensitive, and the periods between multiple statements are 
 optional. 
+
+"Empty" for input boxes means either no content or just whitespace.
