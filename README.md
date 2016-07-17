@@ -56,7 +56,7 @@ line to the code:
 
 Basic syntax:
 
-> **[show | hide]** when **[some id]**'s value **[is | is not]** checked
+> *[show | hide]* when *[some id]* is *[not]* checked
 
 Examples:
 
@@ -67,7 +67,7 @@ Examples:
 
 Basic syntax:
 
-> **[show | hide]** when **[some id]**'s value **[is | is not]** **[some value]**
+> *[show | hide]* when *[some id]*'s value is *[not]* *[some value]*
 
 Examples:
 
