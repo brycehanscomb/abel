@@ -2,15 +2,14 @@
 
 > "I need to show and hide parts of this webpage when the user interacts with 
 > these form controls. And I don't want to load jQuery, Angular or Vue to do it!"
-
-— *People who should use Abel*
+> — *People who should use Abel*
 
 ---
 
 Abel is micro-library that lets you easily show and hide elements on a page 
 based on the values of form controls and user interactions elsewhere. 
 
-And at  just 4KB gzipped, it can provide a lightweight solution that keeps your 
+And at just 4KB gzipped, it can provide a lightweight solution that keeps your 
 site fast and performant.
 
 ## A Simple Example: Signup Forms
@@ -36,6 +35,7 @@ The code here will add a listener to `<input id="terms_agreement_checkbox">`.
 Then whenever the user checks it, the submit button will show.
 
 **Note: the submit button does not hide when the user unchecks the checkbox.** 
+
 To make the button hide if the user unchecks the checkbox as well, add another 
 line to the code:
 
@@ -54,22 +54,30 @@ line to the code:
 
 ### For Checkboxes and Radio Buttons
 
-Basic syntax:
+**Basic syntax:**
 
 > *[show | hide]* when *[some id]* is *[not]* checked
 
-Examples:
+**Examples:**
 
 * `"show when #some_checkbox is checked"`
 * `"hide when #some_checkbox is not checked"`
 
 ### For Other Inputs
 
-Basic syntax:
+**Basic syntax:**
 
 > *[show | hide]* when *[some id]*'s value is *[not]* *[some value]*
 
-Examples:
+Where *[some value]* is one of the following:
+
+1. A number
+2. A string (in 'single quotes')
+3. The word `empty`
+4. `less than`, followed by a number
+5. `more than`, followed by a number
+
+**Examples:**
 
 * `"show when #some_input is 'hello'"`
 * `"hide when #some_input is not 'hello'"`
@@ -113,10 +121,8 @@ initialise all Abel statements.
 
 ## Notes On Usage
 
-Using ordinary strings with specific keywords in the `data-abel` attribute of an
+* Using ordinary strings with specific keywords in the `data-abel` attribute of an
 element, your page will react to the interactions you specify.
-
-The code is not case-sensitive, and the periods between multiple statements are 
-optional. 
-
-"Empty" for input boxes means either no content or just whitespace.
+* The code is not case-sensitive (but your `#css_selectors` are)
+* Periods between multiple statements are optional. 
+* `empty` for input boxes means either no content or just whitespace.
