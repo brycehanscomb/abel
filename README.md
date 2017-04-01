@@ -76,6 +76,7 @@ Where *[some value]* is one of the following:
 3. The word `empty`
 4. `less than`, followed by a number
 5. `more than`, followed by a number
+6. `matching`, followed by a Regular Expression
 
 **Examples:**
 
@@ -85,6 +86,8 @@ Where *[some value]* is one of the following:
 * `"hide when #some_input is more than 10"`
 * `"hide when #some_input is empty"`
 * `"hide when #some_input is not empty"`
+* `"show when #some_input is matching /[0-9]/`
+* `"show when #some_input is not matching /[A-Za-z]/`
 
 ## Installation
 
@@ -94,35 +97,34 @@ Add the following code to your page (just before `</body>`):
 
 ```html
 <script src="path/to/abel.js"></script>
-<script> Abel.go(); </script>
 ```
 
 This will load Abel and do everything automatically. 
 
 Note that if you have a very slow website, elements that Abel will hide (when 
 loaded) might be visible for a short time until the page actually gets to the 
-`Abel.go()` block. If this happens, you basically just need to [make your web pages load faster](https://developers.google.com/speed/).
+`Abel.go()` block. If this happens, you basically just need to 
+[make your web pages load faster](https://developers.google.com/speed/).
 
-### Advanced-Mode: As An npm Module
+### Advanced Usage: In ES6 Scripts
 
-If you need more fine-grained control over the items that Abel controls, you can
-pass in a reference to a DOM node manually:
+You can have more control over when Abel executes by using it via a module 
+syntax:
 
 ```js
-// Make Abel available for use
-var Abel = require('abel');
+/* ES6 Usage */
+import Abel from 'abel';
 
-// Call Abel on a single element (make sure it has a `[data-abel]` attribute with some statements)
-Abel( document.getElementById('some-element') );
+/* CommonJS Usage */
+const Abel = require('abel');
+
+/* Initialize and run! */
+Abel.go();
 ```
-
-Of course, you can still call `Abel.go()` at any time to automagically 
-initialise all Abel statements.
 
 ## Notes On Usage
 
-* Using ordinary strings with specific keywords in the `data-abel` attribute of an
-element, your page will react to the interactions you specify.
-* The code is not case-sensitive (but your `#css_selectors` are)
+* The code is not case-sensitive -- but your `#css_selectors` are.
 * Periods between multiple statements are optional. 
 * `empty` for input boxes means either no content or just whitespace.
+* This project is MIT Licensed.
